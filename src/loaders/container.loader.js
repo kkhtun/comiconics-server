@@ -2,7 +2,10 @@ const awilix = require("awilix");
 
 // This magic of automatic inversion of control using awilix happens here
 function loadModels(container) {
-    let mapping = {};
+    let mapping = {
+        ComicsModel: require("../models/comics.model"),
+        UsersModel: require("../models/users.model"),
+    };
     Object.keys(mapping).forEach((key) => {
         let model = mapping[key];
         container.register({
@@ -12,7 +15,10 @@ function loadModels(container) {
 }
 
 function loadServices(container) {
-    let mapping = {};
+    let mapping = {
+        ComicsService: require("../services/comics.service"),
+        UsersService: require("../services/users.service"),
+    };
     Object.keys(mapping).forEach((key) => {
         let service = mapping[key];
         container.register({
@@ -22,7 +28,9 @@ function loadServices(container) {
 }
 
 function loadControllers(container) {
-    let mapping = {};
+    let mapping = {
+        ComicsController: require("../controllers/comics.controller"),
+    };
     Object.keys(mapping).forEach((key) => {
         let controller = mapping[key];
         container.register({
@@ -32,7 +40,9 @@ function loadControllers(container) {
 }
 
 function loadHandlers(container) {
-    let mapping = {};
+    let mapping = {
+        ComicsHandler: require("../handlers/comics.handler"),
+    };
     Object.keys(mapping).forEach((key) => {
         let handler = mapping[key];
         container.register({
@@ -42,7 +52,9 @@ function loadHandlers(container) {
 }
 
 function loadRoutes(container) {
-    let mapping = {};
+    let mapping = {
+        ComicsRouter: require("../routes/comics.route"),
+    };
     Object.keys(mapping).forEach((key) => {
         let route = mapping[key];
         container.register({
@@ -52,7 +64,9 @@ function loadRoutes(container) {
 }
 
 function loadConstants(container) {
-    let mapping = {};
+    let mapping = {
+        ...require("../constants/errors.constants"),
+    };
     Object.keys(mapping).forEach((key) => {
         let constant = mapping[key];
         container.register({
