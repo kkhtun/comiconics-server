@@ -10,13 +10,10 @@ const ComicsSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        episodes: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Episodes",
-            },
-        ],
-        author: {
+        cover: {
+            type: String,
+        },
+        creator: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Users",
             required: true,

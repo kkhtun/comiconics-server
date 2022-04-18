@@ -84,7 +84,7 @@ function initContainer(layers = []) {
     };
 
     layers = layers.filter((l) => Object.keys(layerMapping).includes(l));
-    layers.forEach((key) => layerMapping[key](container)); // Above functions are called here
+    layers.forEach((key) => layerMapping[key](container)); // Above functions are called here, and layers are injected
     return container;
 }
 

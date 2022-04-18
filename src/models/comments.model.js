@@ -2,9 +2,9 @@ const mongoose = require("mongoose");
 
 const CommentsSchema = new mongoose.Schema(
     {
-        comic_id: {
+        episode_id: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "Comics",
+            ref: "Episodes",
             required: true,
         },
         user_id: {

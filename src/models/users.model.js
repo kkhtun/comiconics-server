@@ -10,6 +10,11 @@ const UsersSchema = new mongoose.Schema(
         name: {
             type: String,
         },
+        user_type: {
+            type: String,
+            required: true,
+            enum: ["ADMIN", "CREATOR", "READER"],
+        },
         favourites: [
             {
                 type: mongoose.Schema.Types.ObjectId,
