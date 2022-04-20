@@ -1,8 +1,10 @@
 module.exports = ({ ComicsService, UsersService }) => ({
     createComic: async (data) => {
-        const user = await UsersService.getOneUserByFilter({
+        await UsersService.getOneUserByFilter({
             _id: data.creator,
+            user_type: "CREATOR",
         });
         return await ComicsService.createComic(data);
     },
+    getComics: ComicsService.getComics,
 });

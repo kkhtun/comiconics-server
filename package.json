@@ -1,11 +1,12 @@
 {
     "name": "server",
     "version": "1.0.0",
-    "description": "",
+    "description": "This is a API server for web comics application",
     "main": "index.js",
     "scripts": {
         "start": "node src/index.js",
-        "dev": "nodemon src/index.js"
+        "dev": "nodemon src/index.js",
+        "test:e2e": "ENV=testing jest tests/e2e --forceExit"
     },
     "author": "",
     "license": "ISC",
@@ -16,9 +17,17 @@
         "express": "^4.17.3",
         "joi": "^17.6.0",
         "joi-objectid": "^4.0.2",
-        "mongoose": "^6.3.0"
+        "moment": "^2.29.3",
+        "mongoose": "^6.3.0",
+        "ramda": "^0.28.0"
     },
     "devDependencies": {
-        "nodemon": "^2.0.15"
+        "@faker-js/faker": "^6.1.2",
+        "jest": "^27.5.1",
+        "nodemon": "^2.0.15",
+        "supertest": "^6.2.2"
+    },
+    "jest": {
+        "globalTeardown": "./src/tests/e2e/global-teardown.js"
     }
 }

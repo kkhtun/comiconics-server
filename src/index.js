@@ -9,12 +9,12 @@ const { dbConnection, routes } = loaders.initialize();
 // Import Middlewares Here eg. authMiddleware, will add later
 
 // Register Middlewares and Routes (entry points for the application)
-app.use(require("cors"));
+app.use(require("cors")());
 app.use(express.json()); // Yay, bodyParser was bundled back to express after 4.16
 app.use(express.urlencoded({ extended: true }));
 
 app.get("/", (req, res) => {
-    res.status(200).send({ message: "Hello, Let's read comics!" });
+    return res.status(200).send({ message: "Hello, Let's read comics!" });
 });
 
 app.use("/api/v1", routes);
