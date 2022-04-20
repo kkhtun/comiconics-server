@@ -21,7 +21,7 @@ module.exports = ({ ComicsController, USER_ERRORS }) => ({
         }
     },
     getComics: async (req, res, next) => {
-        const { error, value } = Joi.schema({
+        const { error, value } = Joi.object({
             limit: Joi.number().integer().default(10),
             skip: Joi.number().integer().default(0),
         }).validate(req.query);
@@ -29,7 +29,7 @@ module.exports = ({ ComicsController, USER_ERRORS }) => ({
         if (error) return next(error);
 
         try {
-            const data = await ComicsController.createComic(value);
+            const data = await ComicsController.getComics(value);
             return res.status(200).send(data);
         } catch (e) {
             return next(e);

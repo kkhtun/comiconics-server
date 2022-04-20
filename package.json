@@ -6,7 +6,7 @@
     "scripts": {
         "start": "node src/index.js",
         "dev": "nodemon src/index.js",
-        "test:e2e": "ENV=testing jest tests/e2e --forceExit"
+        "test:e2e": "ENV=testing jest tests/e2e --runInBand"
     },
     "author": "",
     "license": "ISC",

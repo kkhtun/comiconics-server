@@ -27,10 +27,22 @@ app.use((error, req, res, next) => {
             message: error.details[0].message || "UNPROCESSIBLE ENTITY",
         });
     }
-    return res.status(error.status || 500).send({
-        code: error.status || 500,
-        message: error.message || "ERROR",
-    });
+
+    if (error.status && error.status !== 500) {
+        return res.status(error.status).send({
+            code: error.status,
+            message: error.message || "ERROR",
+        });
+    } else {
+        // Uncaught Errors
+        console.group("[ServerError]: ", error.message);
+        console.error("[STACK]: ", error.stack);
+
+        return res.status(500).send({
+            code: 500,
+            message: error.message || "ERROR",
+        });
+    }
 });
 
 app.use((req, res, next) =>
@@ -41,9 +53,9 @@ app.use((req, res, next) =>
 );
 // Start the server listening and database connection
 (async function main() {
+    const port = process.env.PORT || 3000;
     if (process.env.ENV !== "testing") {
         await dbConnection;
-        const port = process.env.PORT || 3000;
         const logListening = (port) => () => {
             console.log("Server listening at port :", port);
         };

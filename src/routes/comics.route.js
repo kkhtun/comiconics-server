@@ -5,5 +5,7 @@ module.exports = ({ ComicsHandler }) => {
 
     router.post("/", ComicsHandler.createComic);
 
+    router.get("/", ComicsHandler.getComics);
+
     return router;
 };

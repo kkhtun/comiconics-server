@@ -5,9 +5,9 @@ module.exports = ({ ComicsModel }) => ({
     },
     getComics: async ({ limit = 0, skip = 0 }) => {
         let query = {};
-        const [data, count] = Promise.all([
-            await ComicsModel.find(query).limit(limit).skip(skip).exec(),
-            await ComicsModel.countDocuments(query),
+        const [data, count] = await Promise.all([
+            ComicsModel.find(query).limit(limit).skip(skip),
+            ComicsModel.find(query).countDocuments(),
         ]);
         return { data, count };
     },

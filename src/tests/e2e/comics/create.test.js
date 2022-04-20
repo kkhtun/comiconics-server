@@ -6,6 +6,7 @@ const mongoose = require("mongoose");
 // Test Dependencies
 const UsersModel = require("../../../models/users.model");
 const ComicsModel = require("../../../models/comics.model");
+const app = require("../../../index");
 
 // Test Helpers
 const ComicsHelper = require("../helpers/comics.helper")({
@@ -17,10 +18,8 @@ const UsersHelper = require("../helpers/users.helper")({ UsersModel });
 // Test Deps
 describe("Create Comics Service Test Suite", function () {
     // Global Vars
-    let app;
-    beforeAll(async () => {
-        app = require("../../../index");
-    });
+    // let app;
+    beforeAll(async () => {});
 
     afterAll(async () => {
         await ComicsHelper.teardownDatabaseRecords();

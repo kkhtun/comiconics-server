@@ -7,8 +7,20 @@ const ComicsHelper = ({ ComicsModel, UsersModel }) => ({
             title: faker.name.findName(),
             description: faker.lorem.paragraph(),
             cover: faker.image.image(),
-            creator: creator_id,
+            creator: creator_id.toString(),
         };
+    },
+    insertDummyComic: async ({ creator_id }) => {
+        const newUser = new ComicsModel({
+            title: faker.name.findName(),
+            description: faker.lorem.paragraph(),
+            cover: faker.image.image(),
+            creator: creator_id,
+        });
+        return await newUser.save();
+    },
+    insertComics: async (data) => {
+        return await ComicsModel.insertMany(data);
     },
     teardownDatabaseRecords: async () => {
         await ComicsModel.deleteMany({});

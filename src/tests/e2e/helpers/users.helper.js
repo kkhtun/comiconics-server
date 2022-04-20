@@ -10,6 +10,16 @@ const UsersHelper = ({ UsersModel }) => ({
         });
         return await newUser.save();
     },
+    insertUsers: async (data) => {
+        return await UsersModel.insertMany(data);
+    },
+    generateDummyUser: () => {
+        return {
+            email: faker.internet.email(),
+            name: faker.name.findName(),
+            user_type: faker.random.arrayElement(["CREATOR"]),
+        };
+    },
     teardownDatabaseRecords: async () => {
         await UsersModel.deleteMany({});
     },
