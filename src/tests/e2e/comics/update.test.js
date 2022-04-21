@@ -16,7 +16,7 @@ const ComicsHelper = require("../helpers/comics.helper")({
 const UsersHelper = require("../helpers/users.helper")({ UsersModel });
 
 // Test Deps
-describe("Get Comics Service Test Suite", function () {
+describe("Update Comics Service Test Suite", function () {
     // Global Vars
     // let app;
     beforeAll(async () => {});
@@ -26,44 +26,37 @@ describe("Get Comics Service Test Suite", function () {
         await mongoose.connection.close();
     });
 
-    test("GET / - get comics with default limit and skip", async () => {
-        // Setup
-        let dummyUsers = R.range(0, 3).map((n) => {
-            return UsersHelper.generateDummyUser();
-        });
-        let users = await UsersHelper.insertUsers(dummyUsers);
-        let dummyComics = R.map(
-            ({ _id }) =>
-                ComicsHelper.generateDummyComicData({ creator_id: _id }),
-            users
-        );
-        let comics = await ComicsHelper.insertComics(dummyComics);
-        // Test
-        const res = await request(app).get("/api/v1/comics").send();
-        // Assert
-        expect(res.status).toEqual(200);
-        expect(res.body.count).toEqual(comics.length);
-    });
-
-    test("GET / - get one comic correctly", async () => {
+    test("PATCH / - update one comic correctly", async () => {
         // Setup
         const user = await UsersHelper.insertDummyUser({});
         const comic = await ComicsHelper.insertDummyComic({
             creator_id: user._id,
         });
+
+        const update = await ComicsHelper.generateDummyComicData({
+            creator_id: user._id,
+        });
         // Test
         const res = await request(app)
-            .get(`/api/v1/comics/${comic._id}`)
-            .send();
+            .patch(`/api/v1/comics/${comic._id}`)
+            .send(R.omit(["creator"], update));
         // Assert
-        expect(res.status).toEqual(200); // need more checks
+        const pickMatchers = R.pick(["title", "description", "cover"]);
+        expect(res.status).toEqual(200);
+        expect(pickMatchers(res.body)).toMatchObject(pickMatchers(update));
     });
 
-    test("GET / - get one comic that does not exist", async () => {
+    test("PATCH / - update one comic that does not exist", async () => {
         // Setup
         const _id = new mongoose.Types.ObjectId();
+
+        const update = await ComicsHelper.generateDummyComicData({
+            creator_id: new mongoose.Types.ObjectId(),
+        });
         // Test
-        const res = await request(app).get(`/api/v1/comics/${_id}`).send();
+        const res = await request(app)
+            .patch(`/api/v1/comics/${_id}`)
+            .send(R.omit(["creator"], update));
         // Assert
         expect(res.status).toEqual(404);
     });

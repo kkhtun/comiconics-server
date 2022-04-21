@@ -7,4 +7,11 @@ module.exports = ({ ComicsService, UsersService }) => ({
         return await ComicsService.createComic(data);
     },
     getComics: ComicsService.getComics,
+    getOneComic: async ({ _id }) => {
+        return await ComicsService.getOneComicByFilter({ _id });
+    },
+    updateComic: async ({ _id, ...data }) => {
+        const comic = await ComicsService.getOneComicByFilter({ _id });
+        return await ComicsService.updateComic({ _id, ...data });
+    },
 });

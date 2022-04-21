@@ -7,5 +7,9 @@ module.exports = ({ ComicsHandler }) => {
 
     router.get("/", ComicsHandler.getComics);
 
+    router.get("/:_id", ComicsHandler.getOneComic);
+
+    router.patch("/:_id", ComicsHandler.updateComic);
+
     return router;
 };
