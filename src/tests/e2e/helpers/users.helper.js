@@ -6,6 +6,7 @@ const UsersHelper = ({ UsersModel }) => ({
         const newUser = new UsersModel({
             email: faker.internet.email(),
             name: faker.name.findName(),
+            password: faker.lorem.word(),
             user_type,
         });
         return await newUser.save();
@@ -17,6 +18,7 @@ const UsersHelper = ({ UsersModel }) => ({
         return {
             email: faker.internet.email(),
             name: faker.name.findName(),
+            password: faker.lorem.word(),
             user_type: faker.random.arrayElement(["CREATOR"]),
         };
     },
