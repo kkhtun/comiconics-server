@@ -1,4 +1,19 @@
 const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
+
+const EmailVerificationSchema = new mongoose.Schema({
+    token: {
+        type: String,
+    },
+    token_created_at: {
+        type: Date,
+    },
+    tries: {
+        type: Number,
+        default: 0,
+    },
+    _id: false,
+});
 
 const UsersSchema = new mongoose.Schema(
     {
@@ -9,7 +24,6 @@ const UsersSchema = new mongoose.Schema(
         },
         password: {
             type: String,
-            required: true,
         },
         name: {
             type: String,
@@ -25,10 +39,32 @@ const UsersSchema = new mongoose.Schema(
                 ref: "Comics",
             },
         ],
+        email_verification: EmailVerificationSchema,
+        is_email_verified: {
+            type: Boolean,
+            required: true,
+            default: false,
+        },
     },
     {
         timestamps: true,
+        minimize: false,
     }
 );
+
+UsersSchema.pre("save", async function (next) {
+    if (!this.isModified("password")) return next();
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        return next();
+    } catch (err) {
+        return next(err);
+    }
+});
+
+UsersSchema.methods.validatePassword = async function validatePassword(data) {
+    return bcrypt.compare(data, this.password);
+};
 
 module.exports = mongoose.model("Users", UsersSchema, "users");

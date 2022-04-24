@@ -8,12 +8,12 @@ const transporter = nodemailer.createTransport({
 });
 
 module.exports = ({}) => ({
-    sendEmailTo: async ({ email, subject, text }) => {
+    sendEmailTo: async ({ email, subject, html }) => {
         const mailOptions = {
             from: process.env.ADMIN_GMAIL,
             to: email,
             subject,
-            text,
+            html,
         };
 
         return await transporter.sendMail(mailOptions);

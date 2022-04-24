@@ -70,6 +70,7 @@ function loadRoutes(container) {
 function loadConstants(container) {
     let mapping = {
         ...require("../constants/errors.constants"),
+        ...require("../constants/email.constants"),
     };
     Object.keys(mapping).forEach((key) => {
         let constant = mapping[key];
