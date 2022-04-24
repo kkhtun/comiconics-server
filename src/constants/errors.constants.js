@@ -8,6 +8,8 @@ const USER_ERRORS = {
     INVALID_TOKEN: "Token is invalid, please try again",
     EXPIRED_TOKEN: "Token has expired, please request a new token",
     TOO_MANY_TRIES: "Too many tries, please request a new token",
+    INVALID_CREDENTIALS: "Invalid credentials",
+    NOT_AUTHORIZED: "Not authorized",
 };
 
 const COMIC_ERRORS = {

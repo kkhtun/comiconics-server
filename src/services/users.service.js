@@ -1,4 +1,6 @@
 const moment = require("moment");
+const jwt = require("jsonwebtoken");
+const R = require("ramda");
 module.exports = ({ UsersModel, USER_ERRORS }) => ({
     getOneUserByFilter: async (query) => {
         const user = await UsersModel.findOne(query).lean().exec();
@@ -56,7 +58,8 @@ module.exports = ({ UsersModel, USER_ERRORS }) => ({
             existingUser.email_verification.token_created_at =
                 currentTime.format();
             existingUser.email_verification.tries = 0;
-            return await existingUser.save();
+            await existingUser.save();
+            return token;
         } else {
             throw new Error(USER_ERRORS.VERIFIED_USER_EXISTS);
         }
@@ -91,6 +94,24 @@ module.exports = ({ UsersModel, USER_ERRORS }) => ({
             user.email_verification.tries++;
             await user.save();
             throw new Error(USER_ERRORS.INVALID_TOKEN);
+        }
+    },
+    generateJsonWebToken: async ({ email, password }) => {
+        const user = await UsersModel.findOne({ email }).exec();
+        if (!user) {
+            throw new Error(USER_ERRORS.INVALID_CREDENTIALS);
+        }
+        const isPasswordCorrect = await user.validatePassword(password);
+        if (isPasswordCorrect) {
+            // might need more secure patterns of authentication later
+            return {
+                token: await jwt.sign(
+                    R.pick(["_id", "email", "name"], user),
+                    process.env.JWT_SECRET
+                ),
+            };
+        } else {
+            throw new Error(USER_ERRORS.INVALID_CREDENTIALS);
         }
     },
 });

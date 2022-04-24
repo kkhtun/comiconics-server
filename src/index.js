@@ -7,6 +7,10 @@ const app = express();
 const loaders = require("./loaders/index");
 const { dbConnection, routes } = loaders.initialize();
 // Import Middlewares Here eg. authMiddleware, will add later
+const {
+    extractAuthInfo,
+    isAuthenticated,
+} = require("./middlewares/auth.middleware");
 
 // Register Middlewares and Routes (entry points for the application)
 app.use(require("cors")());
@@ -18,6 +22,12 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/v1", routes);
+
+app.get("/auth", extractAuthInfo, isAuthenticated, (req, res) => {
+    return res.status(200).send({
+        message: "Yay! You are authenticated",
+    });
+});
 
 // Error Handling
 app.use((error, req, res, next) => {

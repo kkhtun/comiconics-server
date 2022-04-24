@@ -70,4 +70,24 @@ module.exports = ({ UsersController, USER_ERRORS }) => ({
             return next(e);
         }
     },
+    login: async (req, res, next) => {
+        const { error, value } = Joi.object({
+            email: Joi.string().email().required(),
+            password: Joi.string().min(4).required(),
+        }).validate(req.body);
+
+        if (error) return next(error);
+
+        try {
+            const data = await UsersController.login(value);
+            return res.status(200).send(data);
+        } catch (e) {
+            if (e.message === USER_ERRORS.INVALID_CREDENTIALS) {
+                e.status = 400;
+            } else {
+                e.status = 500;
+            }
+            return next(e);
+        }
+    },
 });
