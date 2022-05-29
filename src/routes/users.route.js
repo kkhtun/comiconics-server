@@ -3,7 +3,7 @@ const express = require("express");
 module.exports = ({ UsersHandler }) => {
     const router = express.Router();
 
-    // Call these routes in order for registration
+    // Call these routes in these order for registration
     router.post("/create-template-user", UsersHandler.createTemplateUser);
 
     router.post("/send-verify-email", UsersHandler.sendVerifyEmail);

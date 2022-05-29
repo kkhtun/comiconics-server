@@ -1,14 +1,16 @@
-module.exports = ({ ComicsService, UsersService }) => ({
+module.exports = ({ ComicsService, ChaptersService, UsersService }) => ({
     createComic: async (data) => {
-        await UsersService.getOneUserByFilter({
-            _id: data.creator,
-            user_type: "CREATOR",
-        });
         return await ComicsService.createComic(data);
     },
     getComics: ComicsService.getComics,
     getOneComic: async ({ _id }) => {
-        return await ComicsService.getOneComicByFilter({ _id });
+        const comic = await ComicsService.getOneComicByFilter({ _id });
+        const { data, count } = await ChaptersService.getChaptersByComicId({
+            comic_id: comic._id,
+        });
+        comic.episodes = data;
+        comic.episodes_count = count;
+        return comic;
     },
     updateComic: async ({ _id, ...data }) => {
         const comic = await ComicsService.getOneComicByFilter({ _id });

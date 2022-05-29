@@ -10,13 +10,12 @@ const ComicsSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        cover: {
+        thumbnail: {
             type: String,
         },
         creator: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "Users",
-            required: true,
         },
         likes: [
             {

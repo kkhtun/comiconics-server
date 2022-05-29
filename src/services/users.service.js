@@ -15,7 +15,8 @@ module.exports = ({ UsersModel, USER_ERRORS }) => ({
             }
             existingUser.user_type = user_type;
             existingUser.password = password;
-            return await existingUser.save();
+            existingUser.email_verification = {};
+            return R.omit(["email_verification"], await existingUser.save());
         }
         const user = new UsersModel({
             email,
@@ -42,27 +43,26 @@ module.exports = ({ UsersModel, USER_ERRORS }) => ({
         const { is_email_verified } = existingUser;
         const currentTime = moment().utc();
 
-        if (is_email_verified === false) {
-            if (
-                existingUser.email_verification.token_created_at &&
-                Math.abs(
-                    moment(existingUser.email_verification.token_created_at)
-                        .utc()
-                        .diff(currentTime, "seconds")
-                ) < 30
-                // throttle 30 seconds for token generation
-            ) {
-                throw new Error(USER_ERRORS.TOO_MANY_REQUESTS);
-            }
-            existingUser.email_verification.token = token;
-            existingUser.email_verification.token_created_at =
-                currentTime.format();
-            existingUser.email_verification.tries = 0;
-            await existingUser.save();
-            return token;
-        } else {
+        if (is_email_verified === true)
             throw new Error(USER_ERRORS.VERIFIED_USER_EXISTS);
+
+        if (
+            existingUser.email_verification.token_created_at &&
+            Math.abs(
+                moment(existingUser.email_verification.token_created_at)
+                    .utc()
+                    .diff(currentTime, "seconds")
+            ) < 30
+            // throttle 30 seconds for token generation
+        ) {
+            throw new Error(USER_ERRORS.TOO_MANY_REQUESTS);
         }
+        existingUser.email_verification.token = token;
+        existingUser.email_verification.token_created_at =
+            currentTime.toISOString();
+        existingUser.email_verification.tries = 0;
+        await existingUser.save();
+        return token;
     },
     verifyEmailWithToken: async ({ email, token }) => {
         const user = await UsersModel.findOne({ email }).exec();

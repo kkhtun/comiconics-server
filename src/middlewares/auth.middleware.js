@@ -21,6 +21,7 @@ async function extractAuthInfo(req, res, next) {
             e.status = 400;
         } else {
             e.status = 500;
+            e.message = USER_ERRORS.INVALID_TOKEN;
         }
         return res.status(e.status).send({
             code: e.status,
@@ -39,4 +40,14 @@ function isAuthenticated(req, res, next) {
     });
 }
 
-module.exports = { extractAuthInfo, isAuthenticated };
+function isAdmin(req, res, next) {
+    if (req.user && req.user.user_type === "ADMIN") {
+        return next();
+    }
+    return res.status(401).send({
+        code: 401,
+        message: USER_ERRORS.NOT_AUTHORIZED,
+    });
+}
+
+module.exports = { extractAuthInfo, isAuthenticated, isAdmin };

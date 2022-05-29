@@ -4,6 +4,8 @@ module.exports = (container) => {
     // Routes Here
     router.use("/comics", container.cradle.ComicsRouter);
 
+    router.use("/chapters", container.cradle.ChaptersRouter);
+
     router.use("/users", container.cradle.UsersRouter);
 
     return router;

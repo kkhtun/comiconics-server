@@ -6,8 +6,6 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
         const { error, value } = Joi.object({
             title: Joi.string().required(),
             description: Joi.string().required(),
-            cover: Joi.string().uri(),
-            creator: Joi.objectid().required(),
         }).validate(req.body);
 
         if (error) return next(error);

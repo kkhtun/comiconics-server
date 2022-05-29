@@ -5,6 +5,7 @@ function loadModels(container) {
     let mapping = {
         ComicsModel: require("../models/comics.model"),
         UsersModel: require("../models/users.model"),
+        ChaptersModel: require("../models/chapters.model"),
     };
     Object.keys(mapping).forEach((key) => {
         let model = mapping[key];
@@ -19,6 +20,7 @@ function loadServices(container) {
         ComicsService: require("../services/comics.service"),
         UsersService: require("../services/users.service"),
         EmailService: require("../services/email.service"),
+        ChaptersService: require("../services/chapters.service"),
     };
     Object.keys(mapping).forEach((key) => {
         let service = mapping[key];
@@ -32,6 +34,7 @@ function loadControllers(container) {
     let mapping = {
         ComicsController: require("../controllers/comics.controller"),
         UsersController: require("../controllers/users.controller"),
+        ChaptersController: require("../controllers/chapters.controller"),
     };
     Object.keys(mapping).forEach((key) => {
         let controller = mapping[key];
@@ -45,6 +48,7 @@ function loadHandlers(container) {
     let mapping = {
         ComicsHandler: require("../handlers/comics.handler"),
         UsersHandler: require("../handlers/users.handler"),
+        ChaptersHandler: require("../handlers/chapters.handler"),
     };
     Object.keys(mapping).forEach((key) => {
         let handler = mapping[key];
@@ -58,6 +62,7 @@ function loadRoutes(container) {
     let mapping = {
         ComicsRouter: require("../routes/comics.route"),
         UsersRouter: require("../routes/users.route"),
+        ChaptersRouter: require("../routes/chapters.route"),
     };
     Object.keys(mapping).forEach((key) => {
         let route = mapping[key];
