@@ -1,4 +1,4 @@
-module.exports = ({ ChaptersModel, CHAPTER_ERRORS }) => ({
+module.exports = ({ ChaptersModel, CHAPTER_ERRORS, S3Service }) => ({
     getChaptersByComicId: async ({
         comic_id,
         limit = 0,
@@ -28,6 +28,11 @@ module.exports = ({ ChaptersModel, CHAPTER_ERRORS }) => ({
             .lean()
             .exec();
         if (!chapter) throw new Error(CHAPTER_ERRORS.NOT_FOUND);
-        return chapter;
+
+        const awsResponse = await S3Service.listImageUrls({
+            imagesFolderUrl: chapter.images_folder_url,
+        });
+
+        return { ...chapter, pages: awsResponse };
     },
 });

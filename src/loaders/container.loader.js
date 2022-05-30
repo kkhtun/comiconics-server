@@ -21,6 +21,7 @@ function loadServices(container) {
         UsersService: require("../services/users.service"),
         EmailService: require("../services/email.service"),
         ChaptersService: require("../services/chapters.service"),
+        S3Service: require("../services/s3.service"),
     };
     Object.keys(mapping).forEach((key) => {
         let service = mapping[key];
