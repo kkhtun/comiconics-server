@@ -8,5 +8,7 @@ module.exports = (container) => {
 
     router.use("/users", container.cradle.UsersRouter);
 
+    router.use("/genres", container.cradle.GenresRouter);
+
     return router;
 };

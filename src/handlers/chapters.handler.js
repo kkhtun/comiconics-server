@@ -7,6 +7,7 @@ module.exports = ({ ChaptersController, CHAPTER_ERRORS, COMIC_ERRORS }) => ({
             comic_id: Joi.objectid().required(),
             title: Joi.string().required(),
             images_folder_url: Joi.string().uri().required(),
+            description: Joi.string().optional(),
         }).validate(req.body);
 
         if (error) return next(error);

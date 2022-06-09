@@ -1,8 +1,18 @@
-module.exports = ({ ComicsService, ChaptersService, UsersService }) => ({
+module.exports = ({ ComicsService, ChaptersService, GenresService }) => ({
     createComic: async (data) => {
+        if (data.genres) {
+            data.genres.forEach(async (genre) => {
+                await GenresService.getOneGenreById(genre);
+            });
+        }
         return await ComicsService.createComic(data);
     },
-    getComics: ComicsService.getComics,
+    getComics: async (query) => {
+        if (query.genres) {
+            query.genres = query.genres.split(",");
+        }
+        return await ComicsService.getComics(query);
+    },
     getOneComic: async ({ _id }) => {
         const comic = await ComicsService.getOneComicByFilter({ _id });
         const { data, count } = await ChaptersService.getChaptersByComicId({

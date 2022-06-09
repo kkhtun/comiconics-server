@@ -6,6 +6,7 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
         const { error, value } = Joi.object({
             title: Joi.string().required(),
             description: Joi.string().required(),
+            genres: Joi.array().items(Joi.objectid()),
         }).validate(req.body);
 
         if (error) return next(error);
@@ -22,6 +23,8 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
         const { error, value } = Joi.object({
             limit: Joi.number().integer().default(10),
             skip: Joi.number().integer().default(0),
+            genres: Joi.string().optional(),
+            search: Joi.string().alphanum().optional(),
         }).validate(req.query);
 
         if (error) return next(error);

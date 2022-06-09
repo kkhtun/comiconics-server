@@ -29,10 +29,10 @@ module.exports = ({ ChaptersModel, CHAPTER_ERRORS, S3Service }) => ({
             .exec();
         if (!chapter) throw new Error(CHAPTER_ERRORS.NOT_FOUND);
 
-        const awsResponse = await S3Service.listImageUrls({
+        const pageUrls = await S3Service.listImageUrls({
             imagesFolderUrl: chapter.images_folder_url,
         });
 
-        return { ...chapter, pages: awsResponse };
+        return { ...chapter, pages: pageUrls };
     },
 });

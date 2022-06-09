@@ -23,6 +23,12 @@ const ComicsSchema = new mongoose.Schema(
                 ref: "Users",
             },
         ],
+        genres: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Genres",
+            },
+        ],
     },
     {
         timestamps: true,
