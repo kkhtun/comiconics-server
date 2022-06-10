@@ -11,5 +11,10 @@ module.exports = ({ ComicsHandler }) => {
 
     router.patch("/:_id", ComicsHandler.updateComic);
 
+    // Likes
+    router.patch("/:_id/likes", ComicsHandler.likeOrUnlikeComic);
+
+    router.get("/:_id/likes", ComicsHandler.getComics);
+
     return router;
 };

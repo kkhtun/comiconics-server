@@ -17,12 +17,6 @@ const ComicsSchema = new mongoose.Schema(
             type: mongoose.Schema.Types.ObjectId,
             ref: "Users",
         },
-        likes: [
-            {
-                type: mongoose.Schema.Types.ObjectId,
-                ref: "Users",
-            },
-        ],
         genres: [
             {
                 type: mongoose.Schema.Types.ObjectId,

@@ -1,4 +1,10 @@
-module.exports = ({ ComicsService, ChaptersService, GenresService }) => ({
+module.exports = ({
+    ComicsService,
+    ChaptersService,
+    GenresService,
+    UsersService,
+    LikesService,
+}) => ({
     createComic: async (data) => {
         if (data.genres) {
             data.genres.forEach(async (genre) => {
@@ -25,5 +31,18 @@ module.exports = ({ ComicsService, ChaptersService, GenresService }) => ({
     updateComic: async ({ _id, ...data }) => {
         const comic = await ComicsService.getOneComicByFilter({ _id });
         return await ComicsService.updateComic({ _id, ...data });
+    },
+    likeOrUnlikeComic: async ({ comic_id, user_id }) => {
+        await ComicsService.getOneComicByFilter({
+            _id: comic_id,
+        });
+        await UsersService.getOneUserByFilter({ _id: user_id });
+        return await LikesService.likeOrUnlikeComic({ comic_id, user_id });
+    },
+    getTotalComicLikes: async ({ comic_id }) => {
+        await ComicsService.getOneComicByFilter({
+            _id: comic_id,
+        });
+        return await LikesService.getTotalLikeCountByComicId(comic_id);
     },
 });

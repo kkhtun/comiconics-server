@@ -69,4 +69,41 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
             return next(e);
         }
     },
+
+    // Related to Comics
+    likeOrUnlikeComic: async (req, res, next) => {
+        const { error, value } = Joi.object({
+            comic_id: Joi.objectid().required(),
+            user_id: Joi.objectid().required(),
+        }).validate({ comic_id: req.params._id, user_id: req.body.user_id });
+
+        if (error) return next(error);
+
+        try {
+            const data = await ComicsController.likeOrUnlikeComic(value);
+            return res.status(200).send(data);
+        } catch (e) {
+            e.status =
+                e.message === COMIC_ERRORS.NOT_FOUND ||
+                e.message === USER_ERRORS.NOT_FOUND
+                    ? 404
+                    : 500;
+            return next(e);
+        }
+    },
+    getTotalComicLikes: async (req, res, next) => {
+        const { error, value } = Joi.object({
+            comic_id: Joi.objectid().required(),
+        }).validate({ comic_id: req.params._id });
+
+        if (error) return next(error);
+
+        try {
+            const data = await ComicsController.getTotalComicLikes(value);
+            return res.status(200).send(data);
+        } catch (e) {
+            e.status = e.message === COMIC_ERRORS.NOT_FOUND ? 404 : 500;
+            return next(e);
+        }
+    },
 });

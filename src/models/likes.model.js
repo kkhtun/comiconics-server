@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const CommentsSchema = new mongoose.Schema(
+const LikesSchema = new mongoose.Schema(
     {
         comic_id: {
             type: mongoose.Schema.Types.ObjectId,
@@ -12,14 +12,10 @@ const CommentsSchema = new mongoose.Schema(
             ref: "Users",
             required: true,
         },
-        body: {
-            type: String,
-            required: true,
-        },
     },
     {
         timestamps: true,
     }
 );
 
-module.exports = mongoose.model("Comments", CommentsSchema, "comments");
+module.exports = mongoose.model("Likes", LikesSchema, "likes");
