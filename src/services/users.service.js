@@ -109,6 +109,7 @@ module.exports = ({ UsersModel, USER_ERRORS }) => ({
                     R.pick(["_id", "email", "name"], user),
                     process.env.JWT_SECRET
                 ),
+                email,
             };
         } else {
             throw new Error(USER_ERRORS.INVALID_CREDENTIALS);

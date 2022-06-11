@@ -39,7 +39,11 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
     getOneComic: async (req, res, next) => {
         const { error, value } = Joi.object({
             _id: Joi.objectid().required(),
-        }).validate(req.params);
+            user_id: Joi.objectid().optional(),
+        }).validate({
+            ...req.params,
+            user_id: req.user ? req.user._id.toString() : undefined,
+        });
 
         if (error) return next(error);
 
@@ -70,12 +74,15 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
         }
     },
 
-    // Related to Comics
+    // Comic Likes
     likeOrUnlikeComic: async (req, res, next) => {
         const { error, value } = Joi.object({
             comic_id: Joi.objectid().required(),
             user_id: Joi.objectid().required(),
-        }).validate({ comic_id: req.params._id, user_id: req.body.user_id });
+        }).validate({
+            comic_id: req.params._id,
+            user_id: req.user ? req.user._id.toString() : undefined,
+        });
 
         if (error) return next(error);
 
@@ -100,6 +107,49 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
 
         try {
             const data = await ComicsController.getTotalComicLikes(value);
+            return res.status(200).send(data);
+        } catch (e) {
+            e.status = e.message === COMIC_ERRORS.NOT_FOUND ? 404 : 500;
+            return next(e);
+        }
+    },
+    // Comic Comments
+    createComment: async (req, res, next) => {
+        const { error, value } = Joi.object({
+            comic_id: Joi.objectid().required(),
+            user_id: Joi.objectid().required(),
+            body: Joi.string().required(),
+        }).validate({
+            comic_id: req.params._id,
+            user_id: req.user ? req.user._id : null,
+            ...req.body,
+        });
+
+        if (error) return next(error);
+
+        try {
+            const data = await ComicsController.createComment(value);
+            return res.status(201).send(data);
+        } catch (e) {
+            e.status =
+                e.message === COMIC_ERRORS.NOT_FOUND ||
+                e.message === USER_ERRORS.NOT_FOUND
+                    ? 404
+                    : 500;
+            return next(e);
+        }
+    },
+    getCommentsByComicId: async (req, res, next) => {
+        const { error, value } = Joi.object({
+            comic_id: Joi.objectid().required(),
+            limit: Joi.number().integer().default(10),
+            skip: Joi.number().integer().default(0),
+        }).validate({ comic_id: req.params._id, ...req.query });
+
+        if (error) return next(error);
+
+        try {
+            const data = await ComicsController.getCommentsByComicId(value);
             return res.status(200).send(data);
         } catch (e) {
             e.status = e.message === COMIC_ERRORS.NOT_FOUND ? 404 : 500;

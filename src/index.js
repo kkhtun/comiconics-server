@@ -21,7 +21,7 @@ app.get("/", (req, res) => {
     return res.status(200).send({ message: "Hello, Let's read comics!" });
 });
 
-app.use("/api/v1", routes);
+app.use("/api/v1", extractAuthInfo, routes);
 
 app.get("/auth", extractAuthInfo, isAuthenticated, (req, res) => {
     return res.status(200).send({

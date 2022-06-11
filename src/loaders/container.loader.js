@@ -8,6 +8,7 @@ function loadModels(container) {
         ChaptersModel: require("../models/chapters.model"),
         GenresModel: require("../models/genres.model"),
         LikesModel: require("../models/likes.model"),
+        CommentsModel: require("../models/comments.model"),
     };
     Object.keys(mapping).forEach((key) => {
         let model = mapping[key];
@@ -25,6 +26,7 @@ function loadServices(container) {
         ChaptersService: require("../services/chapters.service"),
         GenresService: require("../services/genres.service"),
         LikesService: require("../services/likes.service"),
+        CommentsService: require("../services/comments.service"),
         S3Service: require("../services/s3.service"),
     };
     Object.keys(mapping).forEach((key) => {

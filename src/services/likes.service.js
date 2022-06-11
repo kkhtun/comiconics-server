@@ -13,4 +13,12 @@ module.exports = ({ LikesModel }) => ({
             return { liked: true };
         }
     },
+    checkUserHasLikedComic: async ({ comic_id, user_id }) => {
+        const liked = await LikesModel.findOne({ comic_id, user_id }).exec();
+        if (liked) {
+            return true;
+        } else {
+            return false;
+        }
+    },
 });
