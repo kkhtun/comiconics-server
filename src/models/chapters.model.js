@@ -18,6 +18,8 @@ const ChaptersSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
+        // cached fields
+        pages: [{ type: String }],
     },
     {
         timestamps: true,

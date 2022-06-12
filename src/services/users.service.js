@@ -96,23 +96,32 @@ module.exports = ({ UsersModel, USER_ERRORS }) => ({
             throw new Error(USER_ERRORS.INVALID_TOKEN);
         }
     },
-    generateJsonWebToken: async ({ email, password }) => {
+    checkUserPassword: async ({ email, password }) => {
         const user = await UsersModel.findOne({ email }).exec();
         if (!user) {
             throw new Error(USER_ERRORS.INVALID_CREDENTIALS);
         }
         const isPasswordCorrect = await user.validatePassword(password);
         if (isPasswordCorrect) {
-            // might need more secure patterns of authentication later
-            return {
-                token: await jwt.sign(
-                    R.pick(["_id", "email", "name"], user),
-                    process.env.JWT_SECRET
-                ),
-                email,
-            };
+            return user;
         } else {
             throw new Error(USER_ERRORS.INVALID_CREDENTIALS);
         }
+    },
+    generateJsonWebToken: async (_id) => {
+        const user = await UsersModel.findOne({ _id }).lean().exec();
+        if (!user) {
+            throw new Error(USER_ERRORS.INVALID_CREDENTIALS);
+        }
+        if (user.is_email_verified === false) {
+            throw new Error(USER_ERRORS.UNVERIFIED_USER);
+        }
+        return {
+            token: await jwt.sign(
+                R.pick(["_id", "email", "name"], user),
+                process.env.JWT_SECRET
+            ),
+            email: user.email,
+        };
     },
 });

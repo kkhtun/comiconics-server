@@ -107,7 +107,7 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
 
         try {
             const data = await ComicsController.getTotalComicLikes(value);
-            return res.status(200).send(data);
+            return res.status(200).json(data);
         } catch (e) {
             e.status = e.message === COMIC_ERRORS.NOT_FOUND ? 404 : 500;
             return next(e);
@@ -121,7 +121,7 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
             body: Joi.string().required(),
         }).validate({
             comic_id: req.params._id,
-            user_id: req.user ? req.user._id : null,
+            user_id: req.user ? req.user._id.toString() : undefined,
             ...req.body,
         });
 

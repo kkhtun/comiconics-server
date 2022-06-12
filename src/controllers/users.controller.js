@@ -9,10 +9,12 @@ module.exports = ({ UsersService, EmailService, VERIFY_EMAIL }) => ({
         });
     },
     verifyEmailWithToken: async ({ email, token }) => {
-        return await UsersService.verifyEmailWithToken({ email, token });
+        const user = await UsersService.verifyEmailWithToken({ email, token });
         // generate and send auth token or make the user login again
+        return await UsersService.generateJsonWebToken(user._id);
     },
     login: async ({ email, password }) => {
-        return await UsersService.generateJsonWebToken({ email, password });
+        const user = await UsersService.checkUserPassword({ email, password });
+        return await UsersService.generateJsonWebToken(user._id);
     },
 });

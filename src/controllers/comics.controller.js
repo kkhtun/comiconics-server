@@ -1,3 +1,5 @@
+const moment = require("moment");
+
 module.exports = ({
     ComicsService,
     ChaptersService,
@@ -22,13 +24,13 @@ module.exports = ({
     },
     getOneComic: async ({ _id, user_id }) => {
         const comic = await ComicsService.getOneComicByFilter({ _id });
+        // Chapters
         const { data, count } = await ChaptersService.getChaptersByComicId({
             comic_id: comic._id,
         });
         comic.chapters = data;
         comic.chaptersCount = count;
-        comic.likeCount = await LikesService.getTotalLikeCountByComicId(_id);
-
+        // Likes
         if (user_id) {
             await UsersService.getOneUserByFilter({ _id: user_id });
             comic.liked = await LikesService.checkUserHasLikedComic({
@@ -36,6 +38,7 @@ module.exports = ({
                 user_id,
             });
         }
+
         return comic;
     },
     updateComic: async ({ _id, ...data }) => {
@@ -48,13 +51,29 @@ module.exports = ({
             _id: comic_id,
         });
         await UsersService.getOneUserByFilter({ _id: user_id });
-        return await LikesService.likeOrUnlikeComic({ comic_id, user_id });
+        const response = await LikesService.likeOrUnlikeComic({
+            comic_id,
+            user_id,
+        });
+
+        // Get total likes for the comic and cache it in the comic document
+        // We will only display that cached value in most cases
+        const likeCount = await LikesService.getTotalLikeCountByComicId(
+            comic_id
+        );
+        await ComicsService.updateComic(
+            {
+                _id: comic_id,
+                likeCount,
+            },
+            { new: false }
+        );
+
+        return { ...response, likeCount };
     },
     getTotalComicLikes: async ({ comic_id }) => {
-        await ComicsService.getOneComicByFilter({
-            _id: comic_id,
-        });
-        return await LikesService.getTotalLikeCountByComicId(comic_id);
+        const comic = await ComicsService.getOneComicDocumentById(comic_id);
+        return comic.likeCount;
     },
     // Comment
     createComment: async ({ comic_id, body, user_id }) => {
@@ -64,5 +83,10 @@ module.exports = ({
         await UsersService.getOneUserByFilter({ _id: user_id });
         return await CommentsService.createComment({ comic_id, user_id, body });
     },
-    getCommentsByComicId: CommentsService.getCommentsByComicId,
+    getCommentsByComicId: async (query) => {
+        await ComicsService.getOneComicByFilter({
+            _id: query.comic_id,
+        });
+        return await CommentsService.getCommentsByComicId(query);
+    },
 });

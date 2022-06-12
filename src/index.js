@@ -50,7 +50,7 @@ app.use((error, req, res, next) => {
 
         return res.status(500).send({
             code: 500,
-            message: error.message || "ERROR",
+            message: "INTERNAL SERVER ERROR",
         });
     }
 });

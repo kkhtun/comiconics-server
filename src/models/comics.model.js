@@ -23,6 +23,8 @@ const ComicsSchema = new mongoose.Schema(
                 ref: "Genres",
             },
         ],
+        // cached fields
+        likeCount: Number,
     },
     {
         timestamps: true,

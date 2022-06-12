@@ -59,7 +59,8 @@ module.exports = ({ UsersController, USER_ERRORS }) => ({
                 e.message === USER_ERRORS.VERIFIED_USER_EXISTS ||
                 e.message === USER_ERRORS.EXPIRED_TOKEN ||
                 e.message === USER_ERRORS.TOO_MANY_TRIES ||
-                e.message === USER_ERRORS.INVALID_TOKEN
+                e.message === USER_ERRORS.INVALID_TOKEN ||
+                e.message === USER_ERRORS.UNVERIFIED_USER
             ) {
                 e.status = 400;
             } else if (e.message === USER_ERRORS.NOT_FOUND) {
@@ -82,7 +83,10 @@ module.exports = ({ UsersController, USER_ERRORS }) => ({
             const data = await UsersController.login(value);
             return res.status(200).send(data);
         } catch (e) {
-            if (e.message === USER_ERRORS.INVALID_CREDENTIALS) {
+            if (
+                e.message === USER_ERRORS.INVALID_CREDENTIALS ||
+                e.message === USER_ERRORS.UNVERIFIED_USER
+            ) {
                 e.status = 400;
             } else {
                 e.status = 500;

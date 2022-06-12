@@ -2,6 +2,8 @@ const USER_ERRORS = {
     NOT_FOUND: "User not found",
     VERIFIED_USER_EXISTS:
         "A verfied user with this email address already exists",
+    UNVERIFIED_USER:
+        "The account with this email address is not verified, please sign up again to secure account.",
     ALREADY_EXISTS: "User already exists",
     TOO_MANY_REQUESTS:
         "Too many requests, please try again after a few seconds",

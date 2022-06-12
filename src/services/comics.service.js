@@ -37,7 +37,13 @@ module.exports = ({ ComicsModel, COMIC_ERRORS }) => ({
         if (!comic) throw new Error(COMIC_ERRORS.NOT_FOUND);
         return comic;
     },
-    updateComic: async ({ _id, ...data }) => {
-        return await ComicsModel.findOneAndUpdate({ _id }, data, { new: true });
+    getOneComicDocumentById: async (_id) => {
+        // Unlike getOneComic func above, this will only fetch via ID and will be lightweight, no populate
+        const comic = await ComicsModel.findById(_id).lean().exec();
+        if (!comic) throw new Error(COMIC_ERRORS.NOT_FOUND);
+        return comic;
+    },
+    updateComic: async ({ _id, ...data }, options = { new: true }) => {
+        return await ComicsModel.findOneAndUpdate({ _id }, data, options);
     },
 });

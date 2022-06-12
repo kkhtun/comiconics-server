@@ -1,3 +1,4 @@
+const moment = require("moment");
 module.exports = ({ ChaptersModel, CHAPTER_ERRORS, S3Service }) => ({
     getChaptersByComicId: async ({
         comic_id,
@@ -29,10 +30,21 @@ module.exports = ({ ChaptersModel, CHAPTER_ERRORS, S3Service }) => ({
             .exec();
         if (!chapter) throw new Error(CHAPTER_ERRORS.NOT_FOUND);
 
-        const pageUrls = await S3Service.listImageUrls({
-            imagesFolderUrl: chapter.images_folder_url,
-        });
-
-        return { ...chapter, pages: pageUrls };
+        const current = moment().utc();
+        const diff = Math.abs(
+            moment(chapter.updatedAt).utc().diff(current, "minutes")
+        );
+        if (diff > 3 || !chapter.pages) {
+            const pageUrls = await S3Service.listImageUrls({
+                imagesFolderUrl: chapter.images_folder_url,
+            });
+            // cache pages in chapter document at 3 minute intervals
+            return await ChaptersModel.findOneAndUpdate(
+                { _id },
+                { pages: pageUrls },
+                { new: true }
+            );
+        }
+        return chapter;
     },
 });

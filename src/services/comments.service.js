@@ -9,13 +9,17 @@ module.exports = ({ CommentsModel }) => ({
             comic_id,
         };
         const [data, count] = await Promise.all([
-            CommentsModel.find(query, projection).limit(limit).skip(skip),
+            CommentsModel.find(query, projection)
+                .sort("-createdAt")
+                .populate("user_id", "name email")
+                .limit(limit)
+                .skip(skip),
             CommentsModel.find(query).countDocuments(),
         ]);
         return { data, count };
     },
     createComment: async (data) => {
         const comment = new CommentsModel(data);
-        return await comment.save();
+        return (await comment.save()).populate("user_id");
     },
 });
