@@ -7,6 +7,7 @@ module.exports = ({ ComicsController, USER_ERRORS, COMIC_ERRORS }) => ({
             title: Joi.string().required(),
             description: Joi.string().required(),
             genres: Joi.array().items(Joi.objectid()),
+            thumbnail: Joi.string().uri().optional(),
         }).validate(req.body);
 
         if (error) return next(error);

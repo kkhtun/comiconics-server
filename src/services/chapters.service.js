@@ -34,7 +34,7 @@ module.exports = ({ ChaptersModel, CHAPTER_ERRORS, S3Service }) => ({
         const diff = Math.abs(
             moment(chapter.updatedAt).utc().diff(current, "minutes")
         );
-        if (diff > 3 || !chapter.pages) {
+        if (diff > 3 || !chapter.pages || chapter.pages.length === 0 || true) {
             const pageUrls = await S3Service.listImageUrls({
                 imagesFolderUrl: chapter.images_folder_url,
             });
@@ -43,7 +43,7 @@ module.exports = ({ ChaptersModel, CHAPTER_ERRORS, S3Service }) => ({
                 { _id },
                 { pages: pageUrls },
                 { new: true }
-            );
+            ).populate("comic_id", "title");
         }
         return chapter;
     },
