@@ -18,7 +18,6 @@ const ChaptersSchema = new mongoose.Schema(
             type: String,
             required: true,
         },
-        images_url_prefix: { type: String, required: true },
         // cached fields
         pages: [{ type: String }],
     },

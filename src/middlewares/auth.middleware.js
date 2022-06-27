@@ -1,32 +1,51 @@
 const { USER_ERRORS } = require("../constants/errors.constants");
-const jwt = require("jsonwebtoken");
 const UsersModel = require("../models/users.model");
+const FirebaseService = require("../services/firebase.service")({});
+
+const makeErrorResponse =
+    (res) =>
+    ({ status = 401, message = "Unauthorized" }) => {
+        return res.status(status).send({
+            code: status,
+            message: message,
+        });
+    };
 
 async function extractAuthInfo(req, res, next) {
-    const auth = req.headers.authorization;
-    if (!auth) {
-        return next();
-    }
-    try {
-        token = auth.split(" ")[1];
-        if (!token) {
-            throw new Error(USER_ERRORS.INVALID_TOKEN);
+    let respondError = makeErrorResponse(res);
+
+    let authorization = req.headers.authorization;
+    if (authorization) {
+        let bearerToken = authorization.split(" ");
+        if (bearerToken.length != 2 || bearerToken[0] != "Bearer")
+            return respondError({ status: 401, message: "Invalid Token" });
+
+        let token = bearerToken[1];
+        try {
+            const result = await FirebaseService.verifyToken(token);
+            const dbUser = await UsersModel.findOne({
+                firebase_id: result.uid,
+                email: result.email,
+            }).exec();
+            // sync here
+            if (!dbUser || dbUser == null) {
+                const newDbUser = new UsersModel({
+                    firebase_id: result.uid,
+                    email: result.email,
+                    name: result.name,
+                });
+                req.user = await newDbUser.save();
+            } else {
+                dbUser.name = result.name;
+                req.user = await dbUser.save();
+            }
+            req.token = token;
+            return next();
+        } catch (e) {
+            return respondError({ status: 401, message: "Token Expired" });
         }
-        const { _id } = await jwt.verify(token, process.env.JWT_SECRET);
-        req.user = await UsersModel.findOne({ _id }).lean().exec();
-        req.token = token;
+    } else {
         return next();
-    } catch (e) {
-        if (e.message === USER_ERRORS.INVALID_TOKEN) {
-            e.status = 400;
-        } else {
-            e.status = 500;
-            e.message = USER_ERRORS.INVALID_TOKEN;
-        }
-        return res.status(e.status).send({
-            code: e.status,
-            message: e.message,
-        });
     }
 }
 

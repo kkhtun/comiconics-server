@@ -28,6 +28,7 @@ function loadServices(container) {
         LikesService: require("../services/likes.service"),
         CommentsService: require("../services/comments.service"),
         S3Service: require("../services/s3.service"),
+        FirebaseService: require("../services/firebase.service"),
     };
     Object.keys(mapping).forEach((key) => {
         let service = mapping[key];

@@ -32,6 +32,7 @@ const UsersSchema = new mongoose.Schema(
             type: String,
             required: true,
             enum: ["ADMIN", "CREATOR", "READER"],
+            default: "READER",
         },
         favourites: [
             {
@@ -39,6 +40,10 @@ const UsersSchema = new mongoose.Schema(
                 ref: "Comics",
             },
         ],
+        firebase_id: {
+            type: String,
+            required: true,
+        },
         email_verification: EmailVerificationSchema,
         is_email_verified: {
             type: Boolean,
@@ -51,6 +56,8 @@ const UsersSchema = new mongoose.Schema(
         minimize: false,
     }
 );
+
+UsersSchema.index({ firebase_id: 1 });
 
 UsersSchema.pre("save", async function (next) {
     if (!this.isModified("password")) return next();
