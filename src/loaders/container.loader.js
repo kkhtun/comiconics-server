@@ -22,7 +22,6 @@ function loadServices(container) {
     let mapping = {
         ComicsService: require("../services/comics.service"),
         UsersService: require("../services/users.service"),
-        EmailService: require("../services/email.service"),
         ChaptersService: require("../services/chapters.service"),
         GenresService: require("../services/genres.service"),
         LikesService: require("../services/likes.service"),
