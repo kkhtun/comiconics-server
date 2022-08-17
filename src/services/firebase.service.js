@@ -1,8 +1,13 @@
 const firebaseAdminSdk = require("firebase-admin");
-const serviceAccount = require("../configs/firebase-service-account-dev.config.json");
-firebaseAdminSdk.initializeApp({
-    credential: firebaseAdminSdk.credential.cert(serviceAccount),
-});
+const devServiceAccount = JSON.parse(process.env.SERVICE_ACCOUNT);
+
+try {
+    firebaseAdminSdk.initializeApp({
+        credential: firebaseAdminSdk.credential.cert(devServiceAccount),
+    });
+} catch (e) {
+    console.log(e.message);
+}
 
 module.exports = ({}) => ({
     verifyToken: (token) => firebaseAdminSdk.auth().verifyIdToken(token),
